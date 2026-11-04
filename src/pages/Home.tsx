@@ -6,6 +6,7 @@ function Home() {
       <div className="text-center space-y-6">
         <h1 className="text-5xl font-bold tracking-tight">
           Done Ecosystem Platform
+          <h4>Welcome to Version 0.2.0!</h4>
         </h1>
         <p className="text-lg text-neutral-400 max-w-md">
           Definitely One — Your ecosystem platform.
