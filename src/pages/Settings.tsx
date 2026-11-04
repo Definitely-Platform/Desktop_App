@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { getVersion } from "@tauri-apps/api/app";
 
 function Settings() {
+  const [currentVersion, setCurrentVersion] = useState<string>("Loading...");
   const [checking, setChecking] = useState(false);
   const [updateStatus, setUpdateStatus] = useState<string | null>(null);
   const [availableUpdate, setAvailableUpdate] = useState<any>(null);
   const [downloadProgress, setDownloadProgress] = useState<number | null>(null);
+
+  useEffect(() => {
+    getVersion()
+      .then((ver) => setCurrentVersion(`v${ver}`))
+      .catch(() => setCurrentVersion("v0.1.0"));
+  }, []);
 
   const handleCheckUpdate = async () => {
     setChecking(true);
@@ -19,7 +27,7 @@ function Settings() {
         setUpdateStatus(`Version ${update.version} is available!`);
       } else {
         setAvailableUpdate(null);
-        setUpdateStatus("You are on the latest version.");
+        setUpdateStatus("You are already on the latest version.");
       }
     } catch (err: any) {
       console.error(err);
@@ -81,7 +89,7 @@ function Settings() {
               <div>
                 <h2 className="font-semibold text-lg mb-1">Software Updates</h2>
                 <p className="text-sm text-neutral-400">
-                  Current version: <span className="font-mono text-neutral-200">v0.1.0</span>
+                  Current version: <span className="font-mono text-neutral-200">{currentVersion}</span>
                 </p>
               </div>
               <button
@@ -100,7 +108,7 @@ function Settings() {
                 {downloadProgress !== null && (
                   <div className="w-full bg-neutral-800 rounded-full h-2 my-2 overflow-hidden">
                     <div
-                      className="bg-white h-2 rounded-full transition-all duration-300"
+                      className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${downloadProgress}%` }}
                     />
                   </div>
@@ -109,7 +117,7 @@ function Settings() {
                 {availableUpdate && (
                   <button
                     onClick={handleInstallUpdate}
-                    className="mt-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm rounded-lg transition-colors"
+                    className="mt-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm rounded-lg transition-colors cursor-pointer"
                   >
                     Install & Restart
                   </button>
