@@ -4,6 +4,24 @@
 
 A cross-platform desktop application built with [Tauri v2](https://tauri.app), React, and TypeScript.
 
+## Installation
+
+### 🍏 macOS (One-Line Terminal Install)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Definitely-Platform/Desktop_App/main/install.sh | bash
+```
+> Automatically detects Apple Silicon (M-series) or Intel, downloads the latest release, installs to `/Applications`, clears Gatekeeper restrictions, and opens the app!
+
+### 🪟 Windows (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/Definitely-Platform/Desktop_App/main/install.ps1 | iex
+```
+> Downloads the latest setup `.exe` installer and launches the setup wizard automatically.
+
+---
+
 ## Platforms
 
 | Platform | Architecture | Installer |
