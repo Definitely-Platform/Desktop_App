@@ -6,14 +6,10 @@ function Home() {
       <div className="text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold tracking-wide uppercase">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Updated to v0.4.0 Successfully!
+          Updated to v0.5.0 Successfully!
         </div>
-
-        <h1 className="text-5xl font-extrabold tracking-tight">
-          Done Ecosystem Platform
-        </h1>
         <p className="text-lg text-neutral-400 max-w-md mx-auto">
-          Definitely One — You are now running the latest live update!
+          Definitely One — You are now running the latest 5 live update!
         </p>
 
         <div className="flex gap-4 justify-center pt-4">
