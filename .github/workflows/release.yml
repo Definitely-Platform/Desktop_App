@@ -93,4 +93,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
-          gh release edit "$TAG" --draft=false
+          for i in {1..5}; do
+            echo "Publishing release $TAG (attempt $i)..."
+            if gh release edit "$TAG" --draft=false; then
+              echo "Release $TAG published successfully!"
+              exit 0
+            fi
+            echo "Transient API error, retrying in 5 seconds..."
+            sleep 5
+          done
+          echo "Failed to publish release after 5 attempts."
+          exit 1
