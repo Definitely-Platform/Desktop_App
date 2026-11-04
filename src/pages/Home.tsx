@@ -5,7 +5,7 @@ function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
       <div className="text-center space-y-6">
         <h1 className="text-5xl font-bold tracking-tight">
-          Done
+          Done Ecosystem Platform
         </h1>
         <p className="text-lg text-neutral-400 max-w-md">
           Definitely One — Your ecosystem platform.
