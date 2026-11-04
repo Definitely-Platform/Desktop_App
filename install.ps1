@@ -42,6 +42,10 @@ $InstallerPath = Join-Path $TempDir "Done-Setup.exe"
 Write-Host "==> Downloading installer from: $DownloadUrl" -ForegroundColor Yellow
 Invoke-WebRequest -Uri $DownloadUrl -OutFile $InstallerPath
 
+# Remove Windows "Mark of the Web" / SmartScreen download block
+Write-Host "==> Removing Windows SmartScreen download restriction..." -ForegroundColor Yellow
+Unblock-File -Path $InstallerPath -ErrorAction SilentlyContinue
+
 Write-Host "`n==> Launching installer..." -ForegroundColor Green
 Start-Process -FilePath $InstallerPath
 
