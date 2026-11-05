@@ -25,7 +25,7 @@ const authApiHost =
 const desktopAdapter = createDesktopAdapter({
   platformName: "desktop",
   redirectUri,
-  openBrowser: async (url) => {
+  openBrowser: async (url: string) => {
     try {
       await openUrl(url);
     } catch {

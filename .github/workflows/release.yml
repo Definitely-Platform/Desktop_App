@@ -59,8 +59,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@sabrealam'
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -74,8 +72,6 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}
 
       - uses: tauri-apps/tauri-action@v0
         env:
