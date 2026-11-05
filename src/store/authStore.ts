@@ -8,19 +8,20 @@ const STORAGE_KEYS = {
   USER: 'done_auth_user',
 };
 
+// In Vite, `import.meta.env.DEV` is statically replaced with `false` in production bundle builds
+// and `true` in local dev server (`npm run dev` / `tauri dev`).
+// Never inspect `window.location.hostname === 'localhost'` because Tauri serves native bundle assets
+// from 'tauri://localhost' on macOS and 'http://tauri.localhost' on Windows even in production.
 export const AUTH_CONFIG = {
   ACCOUNTS_URL:
-    typeof window !== 'undefined' && window.location.hostname === 'localhost'
-      ? 'http://localhost:5174'
-      : 'https://accounts.definitely.live',
+    (import.meta.env.VITE_ACCOUNTS_URL as string) ||
+    (import.meta.env.DEV ? 'http://localhost:5174' : 'https://accounts.definitely.live'),
   API_URL:
-    typeof window !== 'undefined' && window.location.hostname === 'localhost'
-      ? 'http://localhost:8081'
-      : 'https://api.accounts.definitely.live',
+    (import.meta.env.VITE_AUTH_API_URL as string) ||
+    (import.meta.env.DEV ? 'http://localhost:8081' : 'https://api.accounts.definitely.live'),
   REDIRECT_URI:
-    typeof window !== 'undefined' && window.location.hostname === 'localhost'
-      ? 'http://localhost:1420/auth/callback'
-      : 'done://auth/callback',
+    (import.meta.env.VITE_REDIRECT_URI as string) ||
+    (import.meta.env.DEV ? 'http://localhost:1420/auth/callback' : 'done://auth/callback'),
 };
 
 // Global in-memory state & listeners for zero-dependency reactive auth
