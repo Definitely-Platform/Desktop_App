@@ -7,13 +7,20 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! Welcome to Done.", name)
 }
 
+#[tauri::command]
+fn focus_window(window: tauri::WebviewWindow) {
+    let _ = window.unminimize();
+    let _ = window.show();
+    let _ = window.set_focus();
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, focus_window])
         .setup(|_app| {
             #[cfg(debug_assertions)]
             {
