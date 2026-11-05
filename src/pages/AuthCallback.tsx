@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
-import { loginWithTokens, openSsoLogin, AUTH_CONFIG } from '../store/authStore';
+import { useAuth } from '@sabrealam/platform-sdk';
 
 export const AuthCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { loginWithTokens, login, endpoints } = useAuth();
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -48,10 +49,10 @@ export const AuthCallback: React.FC = () => {
 
       if (!token && ssoCode) {
         try {
-          const pollRes = await fetch(
-            `${AUTH_CONFIG.API_URL}/api/auth/sso/poll?code=${encodeURIComponent(ssoCode)}`,
-            { headers: { Accept: 'application/json' } },
-          );
+          const pollUrl = endpoints.ssoPollUrl(ssoCode);
+          const pollRes = await fetch(pollUrl, {
+            headers: { Accept: 'application/json' },
+          });
           if (pollRes.ok) {
             const pollData = await pollRes.json();
             if (pollData.success && pollData.token) {
@@ -67,7 +68,7 @@ export const AuthCallback: React.FC = () => {
       // 4. Fallback: If no token in URL, query auth-service API with cookies to resolve active session
       if (!token) {
         try {
-          const res = await fetch(`${AUTH_CONFIG.API_URL}/api/auth/me`, {
+          const res = await fetch(endpoints.meUrl, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -119,7 +120,7 @@ export const AuthCallback: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, endpoints, loginWithTokens]);
 
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6 text-white">
@@ -169,7 +170,7 @@ export const AuthCallback: React.FC = () => {
                 Back Home
               </button>
               <button
-                onClick={() => openSsoLogin()}
+                onClick={() => login()}
                 className="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-medium text-white transition-all cursor-pointer shadow-lg shadow-indigo-600/20"
               >
                 Try Again

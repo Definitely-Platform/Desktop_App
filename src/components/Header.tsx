@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, Settings, Shield, User as UserIcon } from "lucide-react";
-import { useAuth } from "../store/authStore";
+import { useAuth } from "@sabrealam/platform-sdk";
 import { AuthModal } from "./AuthModal";
 
 interface HeaderProps {

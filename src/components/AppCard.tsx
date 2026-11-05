@@ -14,7 +14,7 @@ import {
   Check,
 } from "lucide-react";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { useAuth } from "../store/authStore";
+import { useAuth } from "@sabrealam/platform-sdk";
 
 interface AppCardProps {
   app: DefinitelyApp;

@@ -9,7 +9,7 @@ import {
   Sparkles,
   Loader2,
 } from 'lucide-react';
-import { useAuth } from '../store/authStore';
+import { useAuth } from '@sabrealam/platform-sdk';
 import { openUrl } from '@tauri-apps/plugin-opener';
 
 interface AuthModalProps {
@@ -18,22 +18,29 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
-  const { user, isAuthenticated, openSsoLogin, logout, loginWithTokens } = useAuth();
-  const [waitingInBrowser, setWaitingInBrowser] = useState(false);
+  const {
+    user,
+    isAuthenticated,
+    isPolling,
+    login,
+    logout,
+    cancelSsoLogin,
+    loginWithTokens,
+  } = useAuth();
+
   const [manualToken, setManualToken] = useState('');
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualLoading, setManualLoading] = useState(false);
   const [manualError, setManualError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (waitingInBrowser && isAuthenticated) {
+    if (isPolling && isAuthenticated) {
       const timer = setTimeout(() => {
-        setWaitingInBrowser(false);
         onClose();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [waitingInBrowser, isAuthenticated, onClose]);
+  }, [isPolling, isAuthenticated, onClose]);
 
   if (!isOpen) return null;
 
@@ -82,7 +89,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              cancelSsoLogin();
+              onClose();
+            }}
             className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
@@ -138,7 +148,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
             </div>
-          ) : waitingInBrowser ? (
+          ) : isPolling ? (
             <div className="text-center py-6 space-y-4 animate-in fade-in duration-200">
               <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto text-indigo-400">
                 <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
@@ -152,7 +162,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div className="pt-2">
                 <button
                   type="button"
-                  onClick={() => setWaitingInBrowser(false)}
+                  onClick={() => cancelSsoLogin()}
                   className="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-medium text-neutral-300 transition-colors cursor-pointer"
                 >
                   Cancel
@@ -173,10 +183,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
               {/* Primary Browser SSO Action */}
               <button
-                onClick={() => {
-                  setWaitingInBrowser(true);
-                  openSsoLogin();
-                }}
+                onClick={() => login()}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/25 cursor-pointer"
               >
                 <Shield className="w-4 h-4" />
