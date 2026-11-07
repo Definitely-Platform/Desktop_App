@@ -32,15 +32,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualLoading, setManualLoading] = useState(false);
   const [manualError, setManualError] = useState<string | null>(null);
+  const wasPollingRef = React.useRef(false);
 
   useEffect(() => {
-    if (isPolling && isAuthenticated) {
+    if (isPolling) {
+      wasPollingRef.current = true;
+    }
+  }, [isPolling]);
+
+  useEffect(() => {
+    // Automatically close modal after authentication completes
+    if (isAuthenticated && wasPollingRef.current) {
+      wasPollingRef.current = false;
       const timer = setTimeout(() => {
         onClose();
-      }, 500);
+      }, 600);
       return () => clearTimeout(timer);
     }
-  }, [isPolling, isAuthenticated, onClose]);
+  }, [isAuthenticated, onClose]);
 
   if (!isOpen) return null;
 

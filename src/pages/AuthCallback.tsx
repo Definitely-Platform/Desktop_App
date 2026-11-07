@@ -11,7 +11,7 @@ export const AuthCallback: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
+    let active = true;
 
     async function handleAuth() {
       // 1. Check query parameters for all ecosystem token variants
@@ -87,7 +87,7 @@ export const AuthCallback: React.FC = () => {
       }
 
       if (!token) {
-        if (isMounted) {
+        if (active) {
           setStatus('error');
           setErrorMessage('No authentication token detected in the callback URL.');
         }
@@ -96,29 +96,28 @@ export const AuthCallback: React.FC = () => {
 
       try {
         const ok = await loginWithTokens(token, refreshToken || undefined);
-        if (isMounted) {
-          if (ok) {
-            setStatus('success');
-            setTimeout(() => {
-              navigate('/', { replace: true });
-            }, 600);
-          } else {
-            setStatus('error');
-            setErrorMessage('Unable to verify token against the Definitely Identity provider.');
-          }
+        if (!active) return;
+
+        if (ok) {
+          setStatus('success');
+          setTimeout(() => {
+            navigate('/', { replace: true });
+          }, 600);
+        } else {
+          setStatus('error');
+          setErrorMessage('Unable to verify token against the Definitely Identity provider.');
         }
       } catch (err: any) {
-        if (isMounted) {
-          setStatus('error');
-          setErrorMessage(err.message || 'Authentication exchange failed.');
-        }
+        if (!active) return;
+        setStatus('error');
+        setErrorMessage(err.message || 'Authentication exchange failed.');
       }
     }
 
     handleAuth();
 
     return () => {
-      isMounted = false;
+      active = false;
     };
   }, [searchParams, navigate, endpoints, loginWithTokens]);
 

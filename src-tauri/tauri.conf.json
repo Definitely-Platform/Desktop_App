@@ -43,6 +43,11 @@
       "endpoints": [
         "https://github.com/Definitely-Platform/Desktop_App/releases/latest/download/latest.json"
       ]
+    },
+    "deep-link": {
+      "desktop": {
+        "schemes": ["done"]
+      }
     }
   }
 }
